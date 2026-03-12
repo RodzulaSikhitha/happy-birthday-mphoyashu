@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Happy Birthday Mphoyashu 💖</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💖</text></svg>" type="image/svg+xml">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💖</text></svg>">
+<meta name="theme-color" content="#07000f">
+<meta property="og:title" content="Happy Birthday Mphoyashu 💖">
+<meta property="og:description" content="A special birthday celebration for the most amazing person 🌹">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
@@ -648,6 +653,8 @@ section {
   .timeline-track::before { left: 0; }
   section { padding: 3rem 1rem !important; }
   .finale-name { word-break: break-word; }
+  .countdown-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.8rem !important; }
+  .countdown-item { padding: 1rem 0.5rem !important; }
 }
 
 @media (max-width:380px) {
@@ -655,6 +662,151 @@ section {
   .gallery-item-emoji { font-size: 2.5rem; }
   .gallery-label { font-size: .65rem; }
   .reason-card { padding: 1.5rem 1rem; }
+}
+
+/* ============================================================
+   ★  BIRTHDAY COUNTDOWN / AGE COUNTER
+   ============================================================ */
+.countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2rem; max-width: 600px; width: 100%;
+  margin: 2rem auto;
+}
+.countdown-item {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,107,157,.15);
+  border-radius: 16px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  backdrop-filter: blur(6px);
+  transition: transform .3s, box-shadow .3s;
+}
+.countdown-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(255,107,157,.15);
+}
+.countdown-num {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--pink), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+}
+.countdown-label {
+  font-size: .7rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.4);
+  margin-top: .3rem;
+}
+
+/* ============================================================
+   ★  LOVE QUIZ
+   ============================================================ */
+.quiz-wrap {
+  max-width: 600px; width: 100%; margin: 0 auto;
+}
+.quiz-question {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--lavender);
+}
+.quiz-options {
+  display: grid; gap: .8rem;
+}
+.quiz-opt {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,107,157,.12);
+  border-radius: 14px;
+  padding: 1rem 1.5rem;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: .95rem;
+  cursor: pointer;
+  transition: all .3s;
+  text-align: left;
+}
+.quiz-opt:hover {
+  background: rgba(255,107,157,.12);
+  border-color: var(--pink);
+  transform: translateX(6px);
+}
+.quiz-opt.correct {
+  background: rgba(105,240,174,.15);
+  border-color: #69f0ae;
+  box-shadow: 0 0 20px rgba(105,240,174,.2);
+}
+.quiz-opt.wrong {
+  background: rgba(255,64,129,.1);
+  border-color: var(--rose);
+  opacity: .5;
+}
+.quiz-result {
+  text-align: center;
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  color: var(--gold);
+  margin-top: 1.5rem;
+  opacity: 0;
+  transition: opacity .5s;
+}
+.quiz-result.show { opacity: 1; }
+.quiz-progress {
+  text-align: center;
+  font-size: .75rem;
+  color: rgba(255,255,255,.3);
+  letter-spacing: .15em;
+  margin-bottom: 1rem;
+}
+.quiz-score-bar {
+  width: 100%; height: 4px;
+  background: rgba(255,255,255,.06);
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+.quiz-score-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pink), var(--gold));
+  border-radius: 2px;
+  transition: width .5s ease;
+  width: 0;
+}
+
+/* ============================================================
+   ★  FLOATING ACTION — MUSIC TOGGLE
+   ============================================================ */
+.music-toggle {
+  position: fixed;
+  bottom: 2rem; right: 2rem;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  border: none;
+  color: #fff;
+  font-size: 1.4rem;
+  cursor: pointer;
+  z-index: 9990;
+  box-shadow: 0 4px 20px rgba(255,107,157,.4);
+  transition: transform .3s, box-shadow .3s;
+  display: flex; align-items: center; justify-content: center;
+}
+.music-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 30px rgba(255,107,157,.6);
+}
+.music-toggle.playing {
+  animation: musicPulse 1s ease-in-out infinite;
+}
+@keyframes musicPulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(255,107,157,.4); }
+  50% { box-shadow: 0 4px 30px rgba(255,107,157,.7), 0 0 50px rgba(155,89,182,.3); }
 }
 
 /* ============================================================
@@ -939,6 +1091,33 @@ section {
     </button>
   </div>
 </section>
+
+<!-- ============================================================
+     SECTION 8 — BIRTHDAY COUNTDOWN / TIME TOGETHER
+     ============================================================ -->
+<section id="countdown-section">
+  <h2 class="sec-title reveal">Time Since You Blessed This World 🕰️</h2>
+  <div class="countdown-grid reveal" id="countdown-grid"></div>
+</section>
+
+<!-- ============================================================
+     SECTION 9 — LOVE QUIZ
+     ============================================================ -->
+<section id="quiz-section">
+  <h2 class="sec-title reveal">How Well Do You Know Us? 💕</h2>
+  <div class="glass-card quiz-wrap reveal" id="quiz-wrap">
+    <div class="quiz-score-bar"><div class="quiz-score-fill" id="quiz-fill"></div></div>
+    <div class="quiz-progress" id="quiz-progress"></div>
+    <div class="quiz-question" id="quiz-q"></div>
+    <div class="quiz-options" id="quiz-opts"></div>
+    <div class="quiz-result" id="quiz-result"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MUSIC TOGGLE
+     ============================================================ -->
+<button class="music-toggle" id="music-btn" title="Toggle birthday music">🎵</button>
 
 <!-- ============================================================
      JAVASCRIPT
@@ -1373,6 +1552,230 @@ window.addEventListener('load', () => {
     $('loader').classList.add('gone');
   }, 3000);
 });
+
+/* ===================================================
+   BIRTHDAY TIME COUNTER
+   =================================================== */
+(function initCountdown() {
+  const grid = $('countdown-grid');
+  const birthday = new Date();
+  // Show time alive on birthday
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function update() {
+    const now = new Date();
+    // Calculate age-based time
+    const birthYear = now.getFullYear() - (now.getMonth() >= 2 ? 0 : 1); // approximate
+    const years = now.getFullYear() - birthYear;
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const elapsed = now - startOfDay;
+    const hours = Math.floor(elapsed / 3600000);
+    const mins  = Math.floor((elapsed % 3600000) / 60000);
+    const secs  = Math.floor((elapsed % 60000) / 1000);
+
+    grid.innerHTML = `
+      <div class="countdown-item">
+        <span class="countdown-num">${pad(hours)}</span>
+        <span class="countdown-label">Hours Today</span>
+      </div>
+      <div class="countdown-item">
+        <span class="countdown-num">${pad(mins)}</span>
+        <span class="countdown-label">Minutes</span>
+      </div>
+      <div class="countdown-item">
+        <span class="countdown-num">${pad(secs)}</span>
+        <span class="countdown-label">Seconds</span>
+      </div>
+      <div class="countdown-item">
+        <span class="countdown-num">∞</span>
+        <span class="countdown-label">Love</span>
+      </div>
+    `;
+  }
+  update();
+  setInterval(update, 1000);
+})();
+
+/* ===================================================
+   LOVE QUIZ
+   =================================================== */
+(function initQuiz() {
+  const questions = [
+    {
+      q: "What's Mphoyashu's most magical quality?",
+      opts: ["Her radiant smile", "Her kind heart", "Her incredible strength", "All of the above"],
+      correct: 3
+    },
+    {
+      q: "What do the stars do on Mphoyashu's birthday?",
+      opts: ["They hide in jealousy", "They shine extra bright for her", "They rearrange into her name", "They throw their own party"],
+      correct: 1
+    },
+    {
+      q: "How much is Mphoyashu loved?",
+      opts: ["A lot", "More than chocolate", "To infinity and beyond", "Words cannot describe it"],
+      correct: 3
+    },
+    {
+      q: "What happens when Mphoyashu walks into a room?",
+      opts: ["The lights get brighter", "Everyone smiles", "Time stands still", "All of the above, obviously"],
+      correct: 3
+    },
+    {
+      q: "What does Mphoyashu deserve?",
+      opts: ["The world", "All the happiness", "Every beautiful thing", "All of the above and more"],
+      correct: 3
+    }
+  ];
+
+  let current = 0, score = 0;
+  const qEl = $('quiz-q'), optsEl = $('quiz-opts'), resultEl = $('quiz-result');
+  const progressEl = $('quiz-progress'), fillEl = $('quiz-fill');
+
+  function showQuestion() {
+    if (current >= questions.length) {
+      qEl.textContent = '';
+      optsEl.innerHTML = '';
+      progressEl.textContent = '';
+      fillEl.style.width = '100%';
+      resultEl.textContent = score === questions.length
+        ? `Perfect score! You truly know love 💖`
+        : `${score}/${questions.length} — Love is still learning 🌹`;
+      resultEl.classList.add('show');
+      if (score === questions.length) launchConfetti(80);
+      return;
+    }
+    const q = questions[current];
+    progressEl.textContent = `Question ${current + 1} of ${questions.length}`;
+    fillEl.style.width = ((current / questions.length) * 100) + '%';
+    qEl.textContent = q.q;
+    resultEl.classList.remove('show');
+    optsEl.innerHTML = '';
+    q.opts.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-opt';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => answer(i));
+      optsEl.appendChild(btn);
+    });
+  }
+
+  function answer(idx) {
+    const btns = optsEl.querySelectorAll('.quiz-opt');
+    btns.forEach(b => b.style.pointerEvents = 'none');
+    const q = questions[current];
+    if (idx === q.correct) {
+      btns[idx].classList.add('correct');
+      score++;
+    } else {
+      btns[idx].classList.add('wrong');
+      btns[q.correct].classList.add('correct');
+    }
+    current++;
+    setTimeout(showQuestion, 1200);
+  }
+
+  showQuestion();
+})();
+
+/* ===================================================
+   BACKGROUND MUSIC TOGGLE
+   =================================================== */
+(function initMusic() {
+  // Create an ambient sparkle sound using Web Audio API
+  const btn = $('music-btn');
+  let audioCtx, playing = false, nodes = [];
+
+  function createAmbient() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.08;
+    masterGain.connect(audioCtx.destination);
+
+    // Soft chord pad
+    const freqs = [261.63, 329.63, 392.00, 523.25]; // C major chord
+    freqs.forEach(freq => {
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0.03;
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start();
+      nodes.push({ osc, gain });
+
+      // Gentle vibrato
+      const lfo = audioCtx.createOscillator();
+      lfo.frequency.value = 0.5 + Math.random() * 0.5;
+      const lfoGain = audioCtx.createGain();
+      lfoGain.gain.value = 2;
+      lfo.connect(lfoGain);
+      lfoGain.connect(osc.frequency);
+      lfo.start();
+      nodes.push({ osc: lfo, gain: lfoGain });
+    });
+
+    return masterGain;
+  }
+
+  btn.addEventListener('click', () => {
+    if (!playing) {
+      if (!audioCtx) createAmbient();
+      else audioCtx.resume();
+      btn.textContent = '🎶';
+      btn.classList.add('playing');
+      playing = true;
+    } else {
+      audioCtx.suspend();
+      btn.textContent = '🎵';
+      btn.classList.remove('playing');
+      playing = false;
+    }
+  });
+})();
+
+/* ===================================================
+   DOUBLE-TAP / DOUBLE-CLICK HEART BURST
+   =================================================== */
+(function initHeartBurst() {
+  let lastTap = 0;
+  function burst(x, y) {
+    const hearts = ['💖','💕','❤️','💗','💝'];
+    for (let i = 0; i < 8; i++) {
+      const h = document.createElement('div');
+      h.textContent = hearts[Math.random() * hearts.length | 0];
+      const angle = (Math.PI * 2 / 8) * i;
+      const dist = 60 + Math.random() * 40;
+      const tx = Math.cos(angle) * dist;
+      const ty = Math.sin(angle) * dist;
+      h.style.cssText = `
+        position:fixed;left:${x}px;top:${y}px;
+        font-size:${1.2 + Math.random()}rem;
+        pointer-events:none;z-index:9999;
+        transition: all .8s cubic-bezier(.25,.46,.45,.94);
+        opacity:1;
+      `;
+      document.body.appendChild(h);
+      requestAnimationFrame(() => {
+        h.style.transform = `translate(${tx}px, ${ty}px) scale(0.3)`;
+        h.style.opacity = '0';
+      });
+      setTimeout(() => h.remove(), 900);
+    }
+  }
+
+  document.addEventListener('dblclick', e => burst(e.clientX, e.clientY));
+
+  document.addEventListener('touchend', e => {
+    const now = Date.now();
+    if (now - lastTap < 350) {
+      const t = e.changedTouches[0];
+      burst(t.clientX, t.clientY);
+    }
+    lastTap = now;
+  });
+})();
 </script>
 </body>
 </html>
