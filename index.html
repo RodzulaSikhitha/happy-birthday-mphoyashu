@@ -33,6 +33,12 @@ body {
   cursor: none;
 }
 
+/* Show default cursor on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  body { cursor: auto; }
+  #cursor { display: none !important; }
+}
+
 /* ============================================================
    CUSTOM CURSOR
    ============================================================ */
@@ -631,14 +637,24 @@ section {
    RESPONSIVE
    ============================================================ */
 @media (max-width:640px) {
-  .glass-card { padding: 2rem 1.5rem; }
+  .glass-card { padding: 2rem 1.2rem; }
   .reasons-grid { grid-template-columns: 1fr; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
   .tl-item, .tl-item:nth-child(even) {
     width: 90%; margin-left: 10% !important;
     text-align: left !important; padding: 0 0 0 2rem;
   }
   .tl-item .tl-dot, .tl-item:nth-child(even) .tl-dot { left: -8px !important; right: auto !important; }
   .timeline-track::before { left: 0; }
+  section { padding: 3rem 1rem !important; }
+  .finale-name { word-break: break-word; }
+}
+
+@media (max-width:380px) {
+  .gallery-grid { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .gallery-item-emoji { font-size: 2.5rem; }
+  .gallery-label { font-size: .65rem; }
+  .reason-card { padding: 1.5rem 1rem; }
 }
 
 /* ============================================================
@@ -938,16 +954,32 @@ let mouseX = 0, mouseY = 0;
 /* ===================================================
    CURSOR
    =================================================== */
+const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
 document.addEventListener('mousemove', e => {
   mouseX = e.clientX; mouseY = e.clientY;
   cursor.style.left = mouseX + 'px';
   cursor.style.top  = mouseY + 'px';
   spawnSparkle(mouseX, mouseY);
 });
-document.querySelectorAll('a,button,.reason-card,.gallery-item,.cake-wrap').forEach(el => {
-  el.addEventListener('mouseenter', () => cursor.classList.add('big'));
-  el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
-});
+
+/* Touch support — sparkle trail follows finger */
+document.addEventListener('touchmove', e => {
+  const t = e.touches[0];
+  mouseX = t.clientX; mouseY = t.clientY;
+  spawnSparkle(mouseX, mouseY);
+}, { passive: true });
+document.addEventListener('touchstart', e => {
+  const t = e.touches[0];
+  spawnSparkle(t.clientX, t.clientY);
+}, { passive: true });
+
+if (!isTouchDevice) {
+  document.querySelectorAll('a,button,.reason-card,.gallery-item,.cake-wrap').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+  });
+}
 
 /* ===================================================
    SPARKLE TRAIL
