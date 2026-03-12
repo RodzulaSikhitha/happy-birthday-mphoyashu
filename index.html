@@ -1365,6 +1365,8 @@ const revealObs = new IntersectionObserver((entries) => {
     if (e.isIntersecting) {
       const el = e.target;
       el.classList.add('visible');
+      // Play subtle scroll sound for section titles
+      if (el.classList.contains('sec-title')) playScrollRevealSound();
       // Typewriter when message card appears
       if (el.id === 'msg-card' && typeIdx === 0) {
         setTimeout(typeNext, 600);
@@ -1400,12 +1402,110 @@ document.querySelectorAll('.tilt').forEach(card => {
 });
 
 /* ===================================================
+   ROMANTIC SOUND ENGINE (Web Audio API)
+   =================================================== */
+let sfxCtx;
+function getSfxCtx() {
+  if (!sfxCtx) sfxCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return sfxCtx;
+}
+
+// Soft "whoosh" + magical chime for candle blowing
+function playCandleBlowSound() {
+  const ctx = getSfxCtx();
+  const now = ctx.currentTime;
+
+  // Noise whoosh (breath)
+  const bufferSize = ctx.sampleRate * 0.8;
+  const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = noiseBuffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.3;
+  const noise = ctx.createBufferSource();
+  noise.buffer = noiseBuffer;
+  const noiseFilter = ctx.createBiquadFilter();
+  noiseFilter.type = 'bandpass';
+  noiseFilter.frequency.value = 800;
+  noiseFilter.Q.value = 0.5;
+  const noiseGain = ctx.createGain();
+  noiseGain.gain.setValueAtTime(0, now);
+  noiseGain.gain.linearRampToValueAtTime(0.06, now + 0.1);
+  noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+  noise.connect(noiseFilter).connect(noiseGain).connect(ctx.destination);
+  noise.start(now);
+  noise.stop(now + 0.8);
+
+  // Magical chime cascade
+  const chimeNotes = [523.25, 659.25, 783.99, 1046.5]; // C5 E5 G5 C6
+  chimeNotes.forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    const gain = ctx.createGain();
+    const t = now + 0.4 + i * 0.15;
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(0.04, t + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 1.2);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 1.3);
+  });
+}
+
+// Gentle shimmer tone for scroll reveal
+let lastScrollSound = 0;
+function playScrollRevealSound() {
+  const now = Date.now();
+  if (now - lastScrollSound < 600) return; // debounce
+  lastScrollSound = now;
+  const ctx = getSfxCtx();
+  const t = ctx.currentTime;
+
+  // Two-note soft bell
+  const notes = [392, 523.25]; // G4, C5 — warm interval
+  notes.forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    const gain = ctx.createGain();
+    const start = t + i * 0.08;
+    gain.gain.setValueAtTime(0, start);
+    gain.gain.linearRampToValueAtTime(0.025, start + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.001, start + 0.6);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start + 0.7);
+  });
+}
+
+// Warm sparkle for fireworks
+function playFireworkSound() {
+  const ctx = getSfxCtx();
+  const now = ctx.currentTime;
+  for (let i = 0; i < 5; i++) {
+    const osc = ctx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.value = 600 + Math.random() * 1200;
+    const gain = ctx.createGain();
+    const t = now + Math.random() * 0.3;
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(0.02, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.5);
+  }
+}
+
+/* ===================================================
    BIRTHDAY CAKE — BLOW OUT CANDLES
    =================================================== */
 let candlesBlown = false;
 $('cake-wrap').addEventListener('click', () => {
   if (candlesBlown) return;
   candlesBlown = true;
+
+  // Play candle blow sound
+  playCandleBlowSound();
 
   // Blow out flames, show smoke
   ['flame1','flame2','flame3'].forEach((id, i) => {
@@ -1537,6 +1637,7 @@ function launchConfetti(count) {
    FIREWORKS BUTTON
    =================================================== */
 $('fireworks-btn').addEventListener('click', () => {
+  playFireworkSound();
   launchFireworks(10);
   launchConfetti(200);
   const btn = $('fireworks-btn');
@@ -1679,60 +1780,67 @@ window.addEventListener('load', () => {
 })();
 
 /* ===================================================
-   BACKGROUND MUSIC TOGGLE
+   BACKGROUND MUSIC — Wale ft. Usher "Matrimony"
    =================================================== */
 (function initMusic() {
-  // Create an ambient sparkle sound using Web Audio API
   const btn = $('music-btn');
-  let audioCtx, playing = false, nodes = [];
+  const audio = new Audio('matrimony.mp3');
+  audio.loop = true;
+  audio.volume = 0; // start silent, fade in
+  let playing = false;
+  const TARGET_VOL = 0.12; // subtle background level
+  const FADE_MS = 2000;
+  let fadeInterval;
 
-  function createAmbient() {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0.08;
-    masterGain.connect(audioCtx.destination);
-
-    // Soft chord pad
-    const freqs = [261.63, 329.63, 392.00, 523.25]; // C major chord
-    freqs.forEach(freq => {
-      const osc = audioCtx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      const gain = audioCtx.createGain();
-      gain.gain.value = 0.03;
-      osc.connect(gain);
-      gain.connect(masterGain);
-      osc.start();
-      nodes.push({ osc, gain });
-
-      // Gentle vibrato
-      const lfo = audioCtx.createOscillator();
-      lfo.frequency.value = 0.5 + Math.random() * 0.5;
-      const lfoGain = audioCtx.createGain();
-      lfoGain.gain.value = 2;
-      lfo.connect(lfoGain);
-      lfoGain.connect(osc.frequency);
-      lfo.start();
-      nodes.push({ osc: lfo, gain: lfoGain });
-    });
-
-    return masterGain;
+  function fadeVolume(target, duration) {
+    clearInterval(fadeInterval);
+    const step = (target - audio.volume) / (duration / 30);
+    fadeInterval = setInterval(() => {
+      const next = audio.volume + step;
+      if ((step > 0 && next >= target) || (step < 0 && next <= target)) {
+        audio.volume = Math.max(0, Math.min(1, target));
+        clearInterval(fadeInterval);
+        if (target === 0) audio.pause();
+      } else {
+        audio.volume = Math.max(0, Math.min(1, next));
+      }
+    }, 30);
   }
 
   btn.addEventListener('click', () => {
     if (!playing) {
-      if (!audioCtx) createAmbient();
-      else audioCtx.resume();
+      audio.play().then(() => {
+        fadeVolume(TARGET_VOL, FADE_MS);
+      }).catch(() => {});
       btn.textContent = '🎶';
       btn.classList.add('playing');
       playing = true;
     } else {
-      audioCtx.suspend();
+      fadeVolume(0, FADE_MS);
       btn.textContent = '🎵';
       btn.classList.remove('playing');
       playing = false;
     }
   });
+
+  // Auto-play on first user interaction (subtle)
+  let autoPlayed = false;
+  function autoPlay() {
+    if (autoPlayed) return;
+    autoPlayed = true;
+    audio.play().then(() => {
+      fadeVolume(TARGET_VOL, 3000); // slower fade on auto
+      btn.textContent = '🎶';
+      btn.classList.add('playing');
+      playing = true;
+    }).catch(() => {});
+    document.removeEventListener('click', autoPlay);
+    document.removeEventListener('touchstart', autoPlay);
+    document.removeEventListener('scroll', autoPlay);
+  }
+  document.addEventListener('click', autoPlay, { once: true });
+  document.addEventListener('touchstart', autoPlay, { once: true });
+  document.addEventListener('scroll', autoPlay, { once: true });
 })();
 
 /* ===================================================
